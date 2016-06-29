@@ -308,6 +308,32 @@ namespace Ghostscript.NET.Rasterizer
 
         #endregion
 
+        #region InterruptProcessing
+
+        public bool InterruptProcessing
+        {
+            get
+            {
+                return _viewer.Interpreter?.InterruptProcessing ?? false;
+            }
+            set
+            {
+                var interpreter = _viewer.Interpreter;
+                if (null != interpreter) interpreter.InterruptProcessing = value;
+            }
+        }
+
+        #endregion
+
+        #region AbruptTermination
+
+        public void AbruptTermination()
+        {
+            _viewer.Interpreter?.AbruptTermination();
+        }
+
+        #endregion
+
         #region GraphicsAlphaBits
 
         public int GraphicsAlphaBits

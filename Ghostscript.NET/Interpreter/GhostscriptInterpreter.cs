@@ -51,6 +51,8 @@ namespace Ghostscript.NET.Interpreter
         private GhostscriptStdIO _stdIO = null;
         private GhostscriptDisplayDeviceHandler _displayDevice = null;
         private IntPtr _displayDevice_callback_handle = IntPtr.Zero;
+        private gsapi_pool_callback _poolCallBack;
+        private bool _interruptProcessing;
 
         #endregion
 
@@ -156,12 +158,14 @@ namespace Ghostscript.NET.Interpreter
             {
                 if (disposing)
                 {
-                    // GSAPI: exit the interpreter
-                    _gs.gsapi_exit(_gs_instance);
+                    if (_gs_instance != IntPtr.Zero)
+                    {
+                        // GSAPI: exit the interpreter
+                        _gs.gsapi_exit(_gs_instance);
 
-                    // GSAPI: destroy an instance of Ghostscript
-                    _gs.gsapi_delete_instance(_gs_instance);
-
+                        // GSAPI: destroy an instance of Ghostscript
+                        _gs.gsapi_delete_instance(_gs_instance);
+                    }
                     // release all resource used by Ghostscript library
                     _gs.Dispose();
                 }
@@ -194,6 +198,15 @@ namespace Ghostscript.NET.Interpreter
             if (ierrors.IsError(rc_ins))
             {
                 throw new GhostscriptAPICallException("gsapi_new_instance", rc_ins);
+            }
+
+            _poolCallBack = new gsapi_pool_callback(Pool);
+
+            int rc_pool = _gs.gsapi_set_poll(_gs_instance, _poolCallBack);
+
+            if (ierrors.IsError(rc_pool))
+            {
+                throw new GhostscriptAPICallException("gsapi_set_poll", rc_pool);
             }
         }
 
@@ -389,6 +402,42 @@ namespace Ghostscript.NET.Interpreter
         public int LibraryRevision
         {
             get { return _gs.Revision; }
+        }
+
+        #endregion
+
+        #region InterruptProcessing
+
+        public bool InterruptProcessing 
+        {
+            get { return _interruptProcessing; }
+            set { _interruptProcessing = value; }
+        }
+
+        #endregion
+
+        #region AbruptTermination
+
+        public void AbruptTermination()
+        {
+            // this may leak memory, but any further calls will cause native access violations
+            _gs_instance = IntPtr.Zero;
+        }
+
+        #endregion
+
+        #region Pool
+
+        private int Pool(IntPtr handle)
+        {
+            if (_interruptProcessing)
+            {
+                return -1;
+            }
+            else
+            {
+                return 0;
+            }
         }
 
         #endregion
