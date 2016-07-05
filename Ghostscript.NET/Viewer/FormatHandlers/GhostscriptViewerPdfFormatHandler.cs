@@ -28,6 +28,7 @@
 
 using System;
 using System.Drawing;
+using System.Globalization;
 
 namespace Ghostscript.NET.Viewer
 {
@@ -135,34 +136,59 @@ namespace Ghostscript.NET.Viewer
                     case PDF_PAGES_TAG:
                         {
                             string[] pages = rest.Split(new char[] { ' ' });
-                            this.FirstPageNumber = int.Parse(pages[0]);
-                            this.LastPageNumber = int.Parse(pages[1]);
+                            int first, last;
+                            if (pages.Length >= 2 && int.TryParse(pages[0], out first) &&
+                                int.TryParse(pages[1], out last))
+                            {
+                                this.FirstPageNumber = first;
+                                this.LastPageNumber = last;
+                            }
                         }
                         break;
                     case PDF_PAGE_TAG:
                         {
-                            this.CurrentPageNumber = int.Parse(rest);
+                            int number;
+                            if (int.TryParse(rest, out number))
+                            {
+                                this.CurrentPageNumber = number;
+                            }
                             break;
                         }
                     case PDF_MEDIA_TAG:
                         {
                             string[] mb = rest.Split(new char[] { ' ' });
-                            this.MediaBox = new GhostscriptRectangle(
-                                    float.Parse(mb[0].TrimStart('['), System.Globalization.CultureInfo.InvariantCulture), 
-                                    float.Parse(mb[1], System.Globalization.CultureInfo.InvariantCulture), 
-                                    float.Parse(mb[2], System.Globalization.CultureInfo.InvariantCulture), 
-                                    float.Parse(mb[3].TrimEnd(']'), System.Globalization.CultureInfo.InvariantCulture));
+                            float llx, lly, urx, ury;
+                            if (mb.Length >= 4 &&
+                                float.TryParse(mb[0].TrimStart('['), NumberStyles.Float,
+                                    System.Globalization.CultureInfo.InvariantCulture, out llx) &&
+                                float.TryParse(mb[1], NumberStyles.Float,
+                                    System.Globalization.CultureInfo.InvariantCulture, out lly) &&
+                                float.TryParse(mb[2], NumberStyles.Float,
+                                    System.Globalization.CultureInfo.InvariantCulture, out urx) &&
+                                float.TryParse(mb[3].TrimEnd(']'), NumberStyles.Float,
+                                    System.Globalization.CultureInfo.InvariantCulture, out ury))
+                            {
+
+                                this.MediaBox = new GhostscriptRectangle(llx, lly, urx, ury);
+                            }
                             break;
                         }
                     case PDF_CROP_TAG:
                         {
                             string[] cb = rest.Split(new char[] { ' ' });
-                            this.CropBox = new GhostscriptRectangle(
-                                    float.Parse(cb[0].TrimStart('['), System.Globalization.CultureInfo.InvariantCulture),
-                                    float.Parse(cb[1], System.Globalization.CultureInfo.InvariantCulture),
-                                    float.Parse(cb[2], System.Globalization.CultureInfo.InvariantCulture),
-                                    float.Parse(cb[3].TrimEnd(']'), System.Globalization.CultureInfo.InvariantCulture));
-
+                            float llx, lly, urx, ury;
+                            if (cb.Length >= 4 &&
+                                float.TryParse(cb[0].TrimStart('['), NumberStyles.Float,
+                                    System.Globalization.CultureInfo.InvariantCulture, out llx) &&
+                                float.TryParse(cb[1], NumberStyles.Float,
+                                    System.Globalization.CultureInfo.InvariantCulture, out lly) &&
+                                float.TryParse(cb[2], NumberStyles.Float,
+                                    System.Globalization.CultureInfo.InvariantCulture, out urx) &&
+                                float.TryParse(cb[3].TrimEnd(']'), NumberStyles.Float,
+                                    System.Globalization.CultureInfo.InvariantCulture, out ury))
+                            {
+                                this.CropBox = new GhostscriptRectangle(llx, lly, urx, ury);
+                            }
                             break;
                         }
                     case PDF_ROTATE_TAG:
