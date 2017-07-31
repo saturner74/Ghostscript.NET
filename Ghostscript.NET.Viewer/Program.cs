@@ -3,7 +3,7 @@
 // This file is part of Ghostscript.NET.Samples project
 //
 // Author: Josip Habjan (habjan@gmail.com, http://www.linkedin.com/in/habjan) 
-// Copyright (c) 2013-2015 by Josip Habjan. All rights reserved.
+// Copyright (c) 2013-2016 by Josip Habjan. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -34,7 +34,7 @@ namespace Ghostscript.NET.Viewer
 {
     static class Program
     {
-        public static string NAME = "Ghostscript.NET.Viewer " + Assembly.GetEntryAssembly().GetName().Version.ToString();
+        public static string NAME = "Ghostscript.NET.Viewer " + Assembly.GetEntryAssembly().GetName().Version.ToString(3);
 
         /// <summary>
         /// The main entry point for the application.

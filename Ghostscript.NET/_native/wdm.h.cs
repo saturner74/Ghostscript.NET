@@ -3,7 +3,7 @@
 // This file is part of Ghostscript.NET library
 //
 // Author: Josip Habjan (habjan@gmail.com, http://www.linkedin.com/in/habjan) 
-// Copyright (c) 2013-2015 by Josip Habjan. All rights reserved.
+// Copyright (c) 2013-2016 by Josip Habjan. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -33,5 +33,8 @@ namespace Ghostscript.NET
     {
         [DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory")]
         public static extern void MoveMemory(IntPtr destination, IntPtr source, uint length);
+
+        [DllImport("kernel32.dll", EntryPoint = "CopyMemory")]
+        public static extern void CopyMemory(IntPtr destination, IntPtr source, uint count);
     }
 }

@@ -3,7 +3,7 @@
 // This file is part of Ghostscript.NET library
 //
 // Author: Josip Habjan (habjan@gmail.com, http://www.linkedin.com/in/habjan) 
-// Copyright (c) 2013-2015 by Josip Habjan. All rights reserved.
+// Copyright (c) 2013-2016 by Josip Habjan. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -54,7 +54,7 @@ namespace Ghostscript.NET
     public delegate int display_update_callback(IntPtr handle, IntPtr device, Int32 x, Int32 y, Int32 w, Int32 h);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    public delegate IntPtr display_memalloc_callback(IntPtr handle, IntPtr device, UInt32 size);
+    public delegate void display_memalloc_callback(IntPtr handle, IntPtr device, UInt32 size);
 
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     public delegate int display_memfree_callback(IntPtr handle, IntPtr device, IntPtr mem);

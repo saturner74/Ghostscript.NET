@@ -3,7 +3,7 @@
 // This file is part of Ghostscript.NET library
 //
 // Author: Josip Habjan (habjan@gmail.com, http://www.linkedin.com/in/habjan) 
-// Copyright (c) 2013-2015 by Josip Habjan. All rights reserved.
+// Copyright (c) 2013-2016 by Josip Habjan. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -42,6 +42,7 @@ namespace Ghostscript.NET.Processor
         #region Private variables
 
         private bool _disposed = false;
+        private bool _processorOwnsLibrary = true;
         private GhostscriptLibrary _gs;
         private GhostscriptStdIO _stdIO_Callback;
         private GhostscriptProcessorInternalStdIOHandler _internalStdIO_Callback;
@@ -121,6 +122,16 @@ namespace Ghostscript.NET.Processor
 
         #region Constructor - library
 
+        public GhostscriptProcessor(GhostscriptLibrary library, bool processorOwnsLibrary = false)
+        {
+            if (library == null)
+            {
+                throw new ArgumentNullException("library");
+            }
+            _processorOwnsLibrary = processorOwnsLibrary;
+            _gs = library;
+        }
+        
         public GhostscriptProcessor(byte[] library)
         {
             if (library == null)
@@ -183,7 +194,10 @@ namespace Ghostscript.NET.Processor
             {
                 if (disposing)
                 {
-                    _gs.Dispose();
+                    if (_processorOwnsLibrary)
+                    {
+                        _gs.Dispose();
+                    }
                 }
 
                 _disposed = true;
@@ -459,7 +473,7 @@ namespace Ghostscript.NET.Processor
             else if (line.StartsWith("Page"))
             {
                 string[] chunks = line.Split(EMPTY_SPACE_SPLIT);
-                int currentPage = int.Parse(chunks[chunks.Length - 1]);
+                int currentPage = int.Parse(chunks[1]);
 
                 this.OnProcessing(new GhostscriptProcessorProcessingEventArgs(currentPage, _totalPages));
             }

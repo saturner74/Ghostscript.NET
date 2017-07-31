@@ -3,7 +3,7 @@
 // This file is part of Ghostscript.NET library
 //
 // Author: Josip Habjan (habjan@gmail.com, http://www.linkedin.com/in/habjan) 
-// Copyright (c) 2013-2015 by Josip Habjan. All rights reserved.
+// Copyright (c) 2013-2016 by Josip Habjan. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -121,7 +121,7 @@ namespace Ghostscript.NET.Viewer
 
             _destImage = GhostscriptViewerImage.Create(width, height, raster, PixelFormat.Format24bppRgb);
 
-            _viewer.FormatHandler.ShowPagePostScriptCommandInvoked = false; 
+            _viewer.FormatHandler.ShowPagePostScriptCommandInvoked = false;
 
             _viewer.RaiseDisplaySize(new GhostscriptViewerViewEventArgs(_destImage, new Rectangle(0, 0, width, height)));
 
@@ -194,19 +194,11 @@ namespace Ghostscript.NET.Viewer
 
                     if (w == _destImage.Width && h == _destImage.Height)
                     {
-                        //IntPtr bkp = Marshal.AllocCoTaskMem(destStrideSize * h);
-
-                        //ImageMemoryHelper.CopyImagePartFrom(_destImage.Scan0, bkp, 0, 0, w, h, destStrideSize, bytesPerPixel);
-                        //ImageMemoryHelper.CopyImagePartTo(_destImage.Scan0, _srcImage, 0, 0, w, h, destStrideSize, bytesPerPixel);
-                        //ImageMemoryHelper.CopyImagePartTo(_destImage.Scan0, bkp, 0, 0, w, h, destStrideSize, bytesPerPixel);
-
-                        //Marshal.FreeCoTaskMem(bkp);
-
                         _destImage.Unlock();
 
                         return 0;
                     }
-                    
+
                     IntPtr tempTile = Marshal.AllocHGlobal(tileStride * h);
 
                     ImageMemoryHelper.CopyImagePartFrom(_srcImage, tempTile, x, y, w, h, _srcStride, bytesPerPixel);

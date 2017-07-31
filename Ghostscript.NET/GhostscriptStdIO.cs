@@ -3,7 +3,7 @@
 // This file is part of Ghostscript.NET library
 //
 // Author: Josip Habjan (habjan@gmail.com, http://www.linkedin.com/in/habjan) 
-// Copyright (c) 2013-2015 by Josip Habjan. All rights reserved.
+// Copyright (c) 2013-2016 by Josip Habjan. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining
 // a copy of this software and associated documentation files (the
@@ -104,7 +104,7 @@ namespace Ghostscript.NET
                 this.StdIn(out input, count);
 
                 // check if we have input
-                if (!string.IsNullOrWhiteSpace(input))
+                if (!string.IsNullOrEmpty(input))
                 {
                     // add the input to the local cache
                     _input.Append(input);
@@ -144,7 +144,7 @@ namespace Ghostscript.NET
             }
 
             // remove written data out from the cached input
-            _input = _input.Remove(0, count);
+            _input = _input.Remove(0, position);
 
             // return number of bytes written
             return position;
